@@ -1,0 +1,73 @@
+{
+  "name": "golden-stack",
+  "version": "0.0.1",
+  "private": true,
+  "description": "The Golden Stack - Foton Tech secrets and playground for bleeding edge concepts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FotonTech/golden-stack"
+  },
+  "license": "MIT",
+  "author": "Foton",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "build:server": "yarn workspace @golden-stack/server build",
+    "build:web": "yarn workspace @golden-stack/web build",
+    "dev": "concurrently -n web,graphql --kill-others \"yarn web\" \"yarn graphql\"",
+    "graphql": "yarn workspace @golden-stack/server graphql",
+    "lint": "eslint --fix --ext .js,.ts,.tsx",
+    "lint:ci": "eslint --quiet --ext .js,.ts,.tsx .",
+    "lint:fix": "eslint --fix --ext .js,.ts,.tsx .",
+    "prettier": "prettier",
+    "relay": "yarn web:relay && yarn web-razzle:relay",
+    "startup": "./scripts/startup.sh",
+    "test": "jest",
+    "test:server": "yarn workspace @golden-stack/server test",
+    "tsc": "tsc --pretty",
+    "update": "yarn update-schema && yarn relay",
+    "update-schema": "yarn workspace @golden-stack/server update-schema",
+    "web": "yarn workspace @golden-stack/web start",
+    "web-razzle": "yarn workspace @golden-stack/web-razzle start",
+    "web-razzle:relay": "yarn workspace @golden-stack/web-razzle relay",
+    "web:relay": "yarn workspace @golden-stack/web relay"
+  },
+  "lint-staged": {
+    "*.yml": [
+      "yarn prettier --write"
+    ],
+    "*.{ts,tsx,js}": [
+      "yarn prettier --write",
+      "yarn lint"
+    ],
+    "package.json": [
+      "yarn prettier --write",
+      "yarn sort-package-json"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@golden-stack/eslint-config": "*",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "concurrently": "^5.0.0",
+    "husky": "^4.2.1",
+    "jest": "^25.1.0",
+    "jest-cli": "25.1.0",
+    "jest-junit": "^10.0.0",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.0.3",
+    "metro-config": "^0.58.0",
+    "prettier": "^1.19.1",
+    "sort-package-json": "1.22.1",
+    "typescript": "^3.7.5"
+  },
+  "peerDependencies": {
+    "lodash": "4.x"
+  }
+}
