@@ -88,7 +88,7 @@ const mutation = mutationWithClientMutationId({
     };
   },
   outputFields: {
-    eventEdge: {
+    beerEdge: {
       type: BeerConnection.edgeType,
       resolve: async ({ id }, _, context) => {
         const newBeer = await BeerLoader.load(context, id);
