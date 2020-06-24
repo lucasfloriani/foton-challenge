@@ -1,27 +1,20 @@
-import * as loaders from '../loader';
-
 import { GraphQLContext } from '../types';
 
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../common/config';
-
-import User from '../modules/user/UserModel';
-
-import { createTokens } from '../modules/user/helpers/auth';
-
-import { getDataloaders } from './helper';
+import authMiddleware from './middlewares/authMiddleware';
+import corsMiddleware from './middlewares/corsMiddleware';
+import dataloadersMiddleware from './middlewares/dataloadersMiddleware';
+import errorMiddleware from './middlewares/errorMiddleware';
+import fileMiddleware from './middlewares/fileMiddleware';
+import secureCookiesMiddleware from './middlewares/secureCookiesMiddleware';
 
 import { schema } from './schema';
 
 import { koaPlayground } from 'graphql-playground-middleware';
-// import { print } from 'graphql/language';
-import { verify } from 'jsonwebtoken';
 import Koa, { Context } from 'koa';
 import bodyParser from 'koa-bodyparser';
 import convert from 'koa-convert';
-import cors from 'koa-cors';
 import graphqlHttp, { OptionsData } from 'koa-graphql';
 import koaLogger from 'koa-logger';
-import multer from 'koa-multer';
 import cookie from 'koa-cookie';
 import Router from '@koa/router';
 
@@ -32,100 +25,18 @@ if (process.env.NODE_ENV === 'production') {
 
 const router = new Router<any, Context>();
 
-const storage = multer.memoryStorage();
-
-const limits = {
-  fieldSize: 30 * 1024 * 1024,
-};
-
 // if production than trick cookies library to think it is always on a secure request
-if (process.env.NODE_ENV === 'production') {
-  app.use((ctx, next) => {
-    ctx.cookies.secure = true;
-    return next();
-  });
-}
-
+if (process.env.NODE_ENV === 'production') app.use(secureCookiesMiddleware);
+if (process.env.NODE_ENV !== 'test') app.use(koaLogger());
 app.use(bodyParser());
 app.use(cookie());
+app.use(authMiddleware);
+app.use(errorMiddleware);
+app.use(corsMiddleware);
+app.use(dataloadersMiddleware);
 
-app.use(async (ctx, next) => {
-  const accessToken = ctx.cookie['access-token'];
-  const refreshToken = ctx.cookie['refresh-token'];
-  if (!refreshToken && !accessToken) {
-    return next();
-  }
-
-  try {
-    const data = verify(accessToken, ACCESS_TOKEN_SECRET) as any;
-    (ctx.request as any).userId = data.userId;
-    return next();
-  } catch {}
-
-  if (!refreshToken) {
-    return next();
-  }
-
-  let data;
-
-  try {
-    data = verify(refreshToken, REFRESH_TOKEN_SECRET) as any;
-  } catch {
-    return next();
-  }
-
-  const user = await User.findOne(data.userId);
-  // token has been invalidated
-  if (!user) {
-    return next();
-  }
-
-  const tokens = createTokens(user);
-
-  ctx.cookies.set('refresh-token', tokens.refreshToken);
-  ctx.cookies.set('access-token', tokens.accessToken);
-  (ctx.request as any).userId = user.id;
-
-  next();
-});
-
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log('koa error:', err);
-    ctx.status = err.status || 500;
-    ctx.app.emit('error', err, ctx);
-  }
-});
-
-app.on('error', err => {
-  // eslint-disable-next-line no-console
-  console.error('Error while answering request', { error: err });
-});
-
-if (process.env.NODE_ENV !== 'test') {
-  app.use(koaLogger());
-}
-
-app.use(convert(cors({ maxAge: 86400, origin: '*' })));
-
-router.all('/graphql', multer({ storage, limits }).any());
-
-router.all(
-  '/playground',
-  koaPlayground({
-    endpoint: '/graphql',
-  }),
-);
-
-// Middleware to get dataloaders
-app.use((ctx, next) => {
-  ctx.dataloaders = getDataloaders(loaders);
-  return next();
-});
-
+router.all('/graphql', fileMiddleware);
+router.all('/playground', koaPlayground({ endpoint: '/graphql' }));
 router.all(
   '/graphql',
   convert(
