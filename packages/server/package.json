@@ -17,6 +17,7 @@
     "@entria/graphql-mongoose-loader": "^4.3.0",
     "@golden-stack/babel": "*",
     "@koa/router": "^8.0.6",
+    "bcrypt": "^5.0.0",
     "core-js": "^3.6.4",
     "dataloader": "^2.0.0",
     "dotenv-safe": "^8.2.0",
@@ -24,6 +25,7 @@
     "graphql": "^14.6.0",
     "graphql-playground-middleware": "^1.1.2",
     "graphql-relay": "0.6.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
     "koa-convert": "^1.2.0",
@@ -39,6 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
+    "@types/bcrypt": "^3.0.0",
     "@types/dotenv-safe": "^8.1.0",
     "@types/graphql-relay": "^0.4.9",
     "@types/koa": "^2.11.0",

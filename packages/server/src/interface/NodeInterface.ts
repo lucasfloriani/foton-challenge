@@ -1,8 +1,10 @@
 import Event, * as EventLoader from '../modules/event/EventLoader';
 import EventType from '../modules/event/EventType';
+import Beer, * as BeerLoader from '../modules/beer/BeerLoader';
+import BeerType from '../modules/beer/BeerType';
+import User, * as UserLoader from '../modules/user/UserLoader';
+import UserType from '../modules/user/UserType';
 import { GraphQLContext } from '../types';
-
-import { BeerLoader } from '../loader';
 
 import { nodeDefinitions } from './node';
 
@@ -17,6 +19,8 @@ const { nodeField, nodesField, nodeInterface } = nodeDefinitions(
       return EventLoader.load(context, id);
     } else if (type === 'Beer') {
       return BeerLoader.load(context, id);
+    } else if (type === 'User') {
+      return UserLoader.load(context, id);
     }
 
     // it should not get here
@@ -26,6 +30,10 @@ const { nodeField, nodesField, nodeInterface } = nodeDefinitions(
   obj => {
     if (obj instanceof Event) {
       return EventType;
+    } else if (obj instanceof Beer) {
+      return BeerType;
+    } else if (obj instanceof User) {
+      return UserType;
     }
 
     // it should not get here

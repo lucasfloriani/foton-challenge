@@ -18,6 +18,10 @@ if (!process.env.NOW_REGION) {
 // Server
 export const GRAPHQL_PORT = envVar.get('GRAPHQL_PORT', '5001').asPortNumber();
 
+// TODO: Add info about those env vars
+export const REFRESH_TOKEN_SECRET = envVar.get('REFRESH_TOKEN_SECRET').asString();
+export const ACCESS_TOKEN_SECRET = envVar.get('ACCESS_TOKEN_SECRET').asString();
+
 // Export some settings that should always be defined
 export const MONGO_URL = envVar
   .get('MONGO_URL')
