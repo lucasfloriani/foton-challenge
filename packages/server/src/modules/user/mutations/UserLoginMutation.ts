@@ -5,6 +5,8 @@ import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../../common/confi
 
 import { GraphQLContext } from '../../../types';
 
+import { createTokens } from '../helpers/auth';
+
 import bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
@@ -39,8 +41,7 @@ const mutation = mutationWithClientMutationId({
       return { error: 'Senha incorreta' };
     }
 
-    const refreshToken = sign({ userId: user._id, name: user.name }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    const accessToken = sign({ userId: user.id }, ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
+    const { refreshToken, accessToken } = createTokens(user);
 
     return {
       refreshToken,

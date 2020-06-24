@@ -1,5 +1,20 @@
+import * as loaders from '../loader';
+
+import { GraphQLContext } from '../types';
+
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../common/config';
+
+import User from '../modules/user/UserModel';
+
+import { createTokens } from '../modules/user/helpers/auth';
+
+import { getDataloaders } from './helper';
+
+import { schema } from './schema';
+
 import { koaPlayground } from 'graphql-playground-middleware';
 // import { print } from 'graphql/language';
+import { verify } from 'jsonwebtoken';
 import Koa, { Context } from 'koa';
 import bodyParser from 'koa-bodyparser';
 import convert from 'koa-convert';
@@ -7,14 +22,8 @@ import cors from 'koa-cors';
 import graphqlHttp, { OptionsData } from 'koa-graphql';
 import koaLogger from 'koa-logger';
 import multer from 'koa-multer';
+import cookie from 'koa-cookie';
 import Router from '@koa/router';
-
-import * as loaders from '../loader';
-
-import { GraphQLContext } from '../types';
-
-import { getDataloaders } from './helper';
-import { schema } from './schema';
 
 const app = new Koa<any, Context>();
 if (process.env.NODE_ENV === 'production') {
@@ -38,6 +47,47 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(bodyParser());
+app.use(cookie());
+
+app.use(async (ctx, next) => {
+  const accessToken = ctx.cookie['access-token'];
+  const refreshToken = ctx.cookie['refresh-token'];
+  if (!refreshToken && !accessToken) {
+    return next();
+  }
+
+  try {
+    const data = verify(accessToken, ACCESS_TOKEN_SECRET) as any;
+    (ctx.request as any).userId = data.userId;
+    return next();
+  } catch {}
+
+  if (!refreshToken) {
+    return next();
+  }
+
+  let data;
+
+  try {
+    data = verify(refreshToken, REFRESH_TOKEN_SECRET) as any;
+  } catch {
+    return next();
+  }
+
+  const user = await User.findOne(data.userId);
+  // token has been invalidated
+  if (!user) {
+    return next();
+  }
+
+  const tokens = createTokens(user);
+
+  ctx.cookies.set('refresh-token', tokens.refreshToken);
+  ctx.cookies.set('access-token', tokens.accessToken);
+  (ctx.request as any).userId = user.id;
+
+  next();
+});
 
 app.use(async (ctx, next) => {
   try {
