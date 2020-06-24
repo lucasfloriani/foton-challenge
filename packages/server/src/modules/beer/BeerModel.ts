@@ -2,6 +2,11 @@ import mongoose, { Document, Model } from 'mongoose';
 
 const Schema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Types.ObjectId,
+      description: 'User reference from users collection',
+      required: true,
+    },
     name: {
       type: String,
       description: 'Beer name',
@@ -59,8 +64,10 @@ const Schema = new mongoose.Schema(
 );
 
 Schema.index({ title: 'name', description: 'description' });
+Schema.index({ user: 'user' });
 
 export interface IBeer extends Document {
+  user: string;
   name: string;
   description: string;
   image: string;

@@ -15,6 +15,7 @@ import {
   GraphQLInt,
   GraphQLList,
   GraphQLFloat,
+  GraphQLID,
 } from 'graphql';
 
 type ConfigType = GraphQLObjectTypeConfig<Beer, GraphQLContext>;
@@ -28,6 +29,11 @@ const BeerTypeConfig: ConfigType = {
       type: GraphQLNonNull(GraphQLString),
       description: 'MongoDB _id',
       resolve: beer => beer._id.toString(),
+    },
+    user: {
+      type: GraphQLNonNull(GraphQLID),
+      description: 'User reference from users collection',
+      resolve: beer => beer.user.toString(),
     },
     name: {
       type: GraphQLNonNull(GraphQLString),

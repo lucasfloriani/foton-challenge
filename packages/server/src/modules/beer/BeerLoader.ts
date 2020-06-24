@@ -12,6 +12,7 @@ import { Types } from 'mongoose';
 export default class Beer {
   id: string;
   _id: string;
+  user: string;
   name: string;
   description: string;
   image: string;
@@ -27,6 +28,7 @@ export default class Beer {
   constructor(data: IBeer) {
     this.id = data.id || data._id;
     this._id = data._id;
+    this.user = data.user;
     this.name = data.name;
     this.description = data.description;
     this.image = data.image;
@@ -78,6 +80,9 @@ interface LoadBeerArgs extends ConnectionArguments {
 
 export const loadBeers = async (context: GraphQLContext, args: LoadBeerArgs) => {
   const conditions: any = {};
+
+  // TODO: Add search by user logged
+  // TODO: Limit access to search only beers from the user logged, need to be logged to retrieve the beers
 
   if (args.search) {
     const searchRegex = new RegExp(`${escapeRegex(args.search)}`, 'ig');

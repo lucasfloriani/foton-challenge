@@ -4,9 +4,10 @@ import * as BeerLoader from '../BeerLoader';
 import { BeerConnection } from '../BeerType';
 
 import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
-import { GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLList, GraphQLFloat } from 'graphql';
+import { GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLList, GraphQLFloat, GraphQLID } from 'graphql';
 
 interface BeerAddArgs {
+  user: string;
   name: string;
   description: string;
   image: string;
@@ -23,6 +24,9 @@ interface BeerAddArgs {
 const mutation = mutationWithClientMutationId({
   name: 'BeerAdd',
   inputFields: {
+    user: {
+      type: GraphQLNonNull(GraphQLID),
+    },
     name: {
       type: GraphQLNonNull(GraphQLString),
     },
@@ -52,9 +56,21 @@ const mutation = mutationWithClientMutationId({
     },
   },
   mutateAndGetPayload: async (args: BeerAddArgs) => {
-    const { name, description, image, bitterness, coloring, volumetry, style, idealTemperature, alcoholContent } = args;
+    const {
+      user,
+      name,
+      description,
+      image,
+      bitterness,
+      coloring,
+      volumetry,
+      style,
+      idealTemperature,
+      alcoholContent,
+    } = args;
 
     const newBeer = await new Beer({
+      user,
       name,
       description,
       image,
