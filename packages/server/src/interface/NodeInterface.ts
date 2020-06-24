@@ -1,5 +1,3 @@
-import Event, * as EventLoader from '../modules/event/EventLoader';
-import EventType from '../modules/event/EventType';
 import Beer, * as BeerLoader from '../modules/beer/BeerLoader';
 import BeerType from '../modules/beer/BeerType';
 import User, * as UserLoader from '../modules/user/UserLoader';
@@ -15,9 +13,7 @@ const { nodeField, nodesField, nodeInterface } = nodeDefinitions(
   async (globalId, context: GraphQLContext) => {
     const { id, type } = fromGlobalId(globalId);
 
-    if (type === 'Event') {
-      return EventLoader.load(context, id);
-    } else if (type === 'Beer') {
+    if (type === 'Beer') {
       return BeerLoader.load(context, id);
     } else if (type === 'User') {
       return UserLoader.load(context, id);
@@ -28,9 +24,7 @@ const { nodeField, nodesField, nodeInterface } = nodeDefinitions(
   },
   // A method that maps from an object to a type
   obj => {
-    if (obj instanceof Event) {
-      return EventType;
-    } else if (obj instanceof Beer) {
+    if (obj instanceof Beer) {
       return BeerType;
     } else if (obj instanceof User) {
       return UserType;
