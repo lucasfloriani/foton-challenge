@@ -1,6 +1,6 @@
-import multer from 'koa-multer';
+import multer from '@koa/multer';
 
-const storage = multer.memoryStorage();
+const storage = multer.diskStorage({ destination: 'public/uploads' });
 
 const limits = { fieldSize: 30 * 1024 * 1024 };
 
