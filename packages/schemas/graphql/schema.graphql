@@ -1,34 +1,48 @@
-"""Represents Event"""
-type Event implements Node {
+"""Represents Beer"""
+type Beer implements Node {
   """The ID of an object"""
   id: ID!
 
   """MongoDB _id"""
   _id: String!
-  title: String
-  description: String
-  address: String!
-  date: String
+
+  """User reference from users collection"""
+  user: ID!
+  name: String!
+  description: String!
+  image: String!
+  bitterness: Int!
+  coloring: Int!
+  volumetry: String!
+  style: String!
+  idealTemperature: [Int]!
+  alcoholContent: Float!
   createdAt: String
   updatedAt: String
 }
 
-input EventAddInput {
-  title: String!
+input BeerAddInput {
+  user: ID!
+  name: String!
   description: String!
-  address: String
-  date: String
+  image: String!
+  bitterness: Int!
+  coloring: Int!
+  volumetry: String!
+  style: String!
+  idealTemperature: [Int!]!
+  alcoholContent: Float!
   clientMutationId: String
 }
 
-type EventAddPayload {
-  eventEdge: EventEdge
+type BeerAddPayload {
+  beerEdge: BeerEdge
   error: String
   clientMutationId: String
 }
 
 """A connection to a list of items."""
-type EventConnection {
+type BeerConnection {
   """Number of items in this connection"""
   count: Int!
 
@@ -50,20 +64,22 @@ type EventConnection {
   pageInfo: PageInfoExtended!
 
   """A list of edges."""
-  edges: [EventEdge]!
+  edges: [BeerEdge]!
 }
 
 """An edge in a connection."""
-type EventEdge {
+type BeerEdge {
   """The item at the end of the edge"""
-  node: Event!
+  node: Beer
 
   """A cursor for use in pagination"""
   cursor: String!
 }
 
 type Mutation {
-  EventAdd(input: EventAddInput!): EventAddPayload
+  BeerAdd(input: BeerAddInput!): BeerAddPayload
+  UserLogin(input: UserLoginInput!): UserLoginPayload
+  UserRegister(input: UserRegisterInput!): UserRegisterPayload
 }
 
 """An object with an ID"""
@@ -103,6 +119,81 @@ type Query {
     """The IDs of objects"""
     ids: [ID!]!
   ): [Node]!
-  event(id: ID!): Event
-  events(after: String, first: Int, before: String, last: Int, search: String): EventConnection!
+  beers(after: String, first: Int, before: String, last: Int, search: String): BeerConnection!
+  beer(id: ID!): Beer
+  users(after: String, first: Int, before: String, last: Int, search: String): UserConnection!
+  user(id: ID!): User
+}
+
+"""Represents User"""
+type User implements Node {
+  """The ID of an object"""
+  id: ID!
+
+  """MongoDB _id"""
+  _id: String!
+  name: String!
+  email: String!
+  createdAt: String
+  updatedAt: String
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Number of items in this connection"""
+  count: Int!
+
+  """
+  A count of the total number of objects in this connection, ignoring pagination.
+    This allows a client to fetch the first five objects by passing "5" as the
+    argument to "first", then fetch the total count so it could display "5 of 83",
+    for example.
+  """
+  totalCount: Int!
+
+  """Offset from start"""
+  startCursorOffset: Int!
+
+  """Offset till end"""
+  endCursorOffset: Int!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfoExtended!
+
+  """A list of edges."""
+  edges: [UserEdge]!
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge"""
+  node: User
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+input UserLoginInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type UserLoginPayload {
+  userEdge: UserEdge
+  error: String
+  clientMutationId: String
+}
+
+input UserRegisterInput {
+  name: String!
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type UserRegisterPayload {
+  userEdge: UserEdge
+  error: String
+  clientMutationId: String
 }
