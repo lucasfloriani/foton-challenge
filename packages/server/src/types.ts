@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable @typescript-eslint/array-type */
 
-import { IBeer } from './modules/beer/BeerModel';
-import { IUser } from './modules/user/UserModel';
-
 import DataLoader from 'dataloader';
 import { Types } from 'mongoose';
 import { Context } from 'koa';
+
+import { IUser } from './modules/user/UserModel';
+import { IBeer } from './modules/beer/BeerModel';
 
 export type DataLoaderKey = Types.ObjectId | string | undefined | null;
 

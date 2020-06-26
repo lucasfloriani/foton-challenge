@@ -1,3 +1,21 @@
+import { koaPlayground } from 'graphql-playground-middleware';
+
+import Koa, { Context } from 'koa';
+
+import bodyParser from 'koa-bodyparser';
+
+import convert from 'koa-convert';
+
+import serve from 'koa-static';
+
+import graphqlHttp, { OptionsData } from 'koa-graphql';
+
+import koaLogger from 'koa-logger';
+
+import cookie from 'koa-cookie';
+
+import Router from '@koa/router';
+
 import { GraphQLContext } from '../types';
 
 import authMiddleware from './middlewares/authMiddleware';
@@ -9,15 +27,6 @@ import secureCookiesMiddleware from './middlewares/secureCookiesMiddleware';
 
 import { schema } from './schema';
 
-import { koaPlayground } from 'graphql-playground-middleware';
-import Koa, { Context } from 'koa';
-import bodyParser from 'koa-bodyparser';
-import convert from 'koa-convert';
-import graphqlHttp, { OptionsData } from 'koa-graphql';
-import koaLogger from 'koa-logger';
-import cookie from 'koa-cookie';
-import Router from '@koa/router';
-
 const app = new Koa<any, Context>();
 if (process.env.NODE_ENV === 'production') {
   app.proxy = true;
@@ -28,6 +37,7 @@ const router = new Router<any, Context>();
 // if production than trick cookies library to think it is always on a secure request
 if (process.env.NODE_ENV === 'production') app.use(secureCookiesMiddleware);
 if (process.env.NODE_ENV !== 'test') app.use(koaLogger());
+app.use(serve('public/uploads'));
 app.use(bodyParser());
 app.use(cookie());
 app.use(authMiddleware);
@@ -41,7 +51,7 @@ router.all(
   '/graphql',
   convert(
     graphqlHttp(
-      async (request, ctx, koaContext: unknown): Promise<OptionsData> => {
+      async (request, ctx, koaContext): Promise<OptionsData> => {
         const { dataloaders } = koaContext;
         const { appversion, appbuild, appplatform } = request.header;
 

@@ -1,3 +1,11 @@
+import bcrypt from 'bcrypt';
+
+import { sign } from 'jsonwebtoken';
+
+import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
+
+import { GraphQLNonNull, GraphQLString } from 'graphql';
+
 import User from '../UserModel';
 import { UserConnection } from '../UserType';
 
@@ -6,11 +14,6 @@ import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../../common/confi
 import { GraphQLContext } from '../../../types';
 
 import { createTokens } from '../helpers/auth';
-
-import bcrypt from 'bcrypt';
-import { sign } from 'jsonwebtoken';
-import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
-import { GraphQLNonNull, GraphQLString } from 'graphql';
 
 interface UserLoginArgs {
   email: string;
