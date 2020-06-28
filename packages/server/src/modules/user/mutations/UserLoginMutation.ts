@@ -1,15 +1,13 @@
 import bcrypt from 'bcrypt';
 
-import { sign } from 'jsonwebtoken';
-
 import { mutationWithClientMutationId, toGlobalId } from 'graphql-relay';
 
 import { GraphQLNonNull, GraphQLString } from 'graphql';
 
+import Yup from 'yup';
+
 import User from '../UserModel';
 import { UserConnection } from '../UserType';
-
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../../common/config';
 
 import { GraphQLContext } from '../../../types';
 
@@ -19,6 +17,19 @@ interface UserLoginArgs {
   email: string;
   password: string;
 }
+
+const validateLogin = Yup.object<UserLoginArgs>()
+  .shape<UserLoginArgs>({
+    email: Yup.string()
+      .typeError('E-mail precisa ser um texto')
+      .email('E-mail é inválido')
+      .required('E-mail é obrigatório'),
+    password: Yup.string()
+      .typeError('Senha precisa ser um texto')
+      .min(5, 'Senha precisa ter no mínimo 5 caracteres')
+      .required('Senha é obrigatório'),
+  })
+  .required();
 
 const mutation = mutationWithClientMutationId({
   name: 'UserLogin',
@@ -31,7 +42,7 @@ const mutation = mutationWithClientMutationId({
     },
   },
   mutateAndGetPayload: async (args: UserLoginArgs) => {
-    const { email, password } = args;
+    const { email, password } = await validateLogin.validate(args);
 
     // TODO: Check if this can be put in dataloader
     const user = await User.findOne({ email });
