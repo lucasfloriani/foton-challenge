@@ -41,7 +41,8 @@
     "multer": "^1.4.2",
     "pretty-format": "^24.9.0",
     "subscriptions-transport-ws": "^0.9.16",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
@@ -59,6 +60,7 @@
     "@types/mongoose": "^5.5.43",
     "@types/multer": "^1.4.3",
     "@types/node": "^12.12.11",
+    "@types/yup": "^0.29.3",
     "babel-loader": "^8.0.5",
     "mongodb-memory-server": "^6.2.4",
     "reload-server-webpack-plugin": "^1.0.1",
