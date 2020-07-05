@@ -1,13 +1,12 @@
-import { DataLoaderKey, GraphQLContext } from '../../types';
-
-import { escapeRegex } from '../../common/utils';
-
-import BeerModel, { IBeer } from './BeerModel';
-
 import { connectionFromMongoCursor, mongooseLoader } from '@entria/graphql-mongoose-loader';
 import DataLoader from 'dataloader';
 import { ConnectionArguments } from 'graphql-relay';
 import { Types } from 'mongoose';
+
+import { escapeRegex } from '../../common/utils';
+import { DataLoaderKey, GraphQLContext } from '../../types';
+
+import BeerModel, { IBeer } from './BeerModel';
 
 export default class Beer {
   id: string;

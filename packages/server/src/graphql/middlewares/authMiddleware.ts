@@ -1,10 +1,10 @@
+import { verify } from 'jsonwebtoken';
+
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../common/config';
 
 import User from '../../modules/user/UserModel';
 
 import { createTokens } from '../../modules/user/helpers/auth';
-
-import { verify } from 'jsonwebtoken';
 
 export default async function authMiddleware(ctx, next) {
   const accessToken = ctx.cookie['access-token'];

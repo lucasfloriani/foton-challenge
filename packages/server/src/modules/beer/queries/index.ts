@@ -1,10 +1,11 @@
+import { connectionArgs, fromGlobalId } from 'graphql-relay';
+
+import { GraphQLID, GraphQLString, GraphQLNonNull, GraphQLFieldConfigMap } from 'graphql';
+
 import { GraphQLContext } from '../../../types';
 
 import * as BeerLoader from '../BeerLoader';
 import BeerType, { BeerConnection } from '../BeerType';
-
-import { connectionArgs, fromGlobalId } from 'graphql-relay';
-import { GraphQLID, GraphQLString, GraphQLNonNull, GraphQLFieldConfigMap } from 'graphql';
 
 export default {
   beers: {

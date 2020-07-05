@@ -1,3 +1,7 @@
+import { globalIdField } from 'graphql-relay';
+
+import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from 'graphql';
+
 import { connectionDefinitions } from '../../graphql/connection/CustomConnectionType';
 
 import { NodeInterface } from '../../interface/NodeInterface';
@@ -5,9 +9,6 @@ import { NodeInterface } from '../../interface/NodeInterface';
 import { GraphQLContext } from '../../types';
 
 import User from './UserLoader';
-
-import { globalIdField } from 'graphql-relay';
-import { GraphQLNonNull, GraphQLObjectType, GraphQLObjectTypeConfig, GraphQLString } from 'graphql';
 
 type ConfigType = GraphQLObjectTypeConfig<User, GraphQLContext>;
 

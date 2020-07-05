@@ -1,7 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable @typescript-eslint/array-type */
-
 import DataLoader from 'dataloader';
 import { Types } from 'mongoose';
 import { Context } from 'koa';

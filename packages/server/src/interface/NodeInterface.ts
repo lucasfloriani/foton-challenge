@@ -1,3 +1,5 @@
+import { fromGlobalId } from 'graphql-relay';
+
 import Beer, * as BeerLoader from '../modules/beer/BeerLoader';
 import BeerType from '../modules/beer/BeerType';
 import User, * as UserLoader from '../modules/user/UserLoader';
@@ -5,8 +7,6 @@ import UserType from '../modules/user/UserType';
 import { GraphQLContext } from '../types';
 
 import { nodeDefinitions } from './node';
-
-import { fromGlobalId } from 'graphql-relay';
 
 const { nodeField, nodesField, nodeInterface } = nodeDefinitions(
   // A method that maps from a global id to an object

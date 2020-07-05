@@ -1,12 +1,5 @@
-import { connectionDefinitions } from '../../graphql/connection/CustomConnectionType';
-
-import { NodeInterface } from '../../interface/NodeInterface';
-
-import { GraphQLContext } from '../../types';
-
-import Beer from './BeerLoader';
-
 import { globalIdField } from 'graphql-relay';
+
 import {
   GraphQLNonNull,
   GraphQLObjectType,
@@ -17,6 +10,14 @@ import {
   GraphQLFloat,
   GraphQLID,
 } from 'graphql';
+
+import { connectionDefinitions } from '../../graphql/connection/CustomConnectionType';
+
+import { NodeInterface } from '../../interface/NodeInterface';
+
+import { GraphQLContext } from '../../types';
+
+import Beer from './BeerLoader';
 
 type ConfigType = GraphQLObjectTypeConfig<Beer, GraphQLContext>;
 

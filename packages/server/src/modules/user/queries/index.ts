@@ -1,10 +1,11 @@
+import { connectionArgs, fromGlobalId } from 'graphql-relay';
+
+import { GraphQLID, GraphQLString, GraphQLNonNull, GraphQLFieldConfigMap } from 'graphql';
+
 import { GraphQLContext } from '../../../types';
 
 import * as UserLoader from '../UserLoader';
 import UserType, { UserConnection } from '../UserType';
-
-import { connectionArgs, fromGlobalId } from 'graphql-relay';
-import { GraphQLID, GraphQLString, GraphQLNonNull, GraphQLFieldConfigMap } from 'graphql';
 
 export default {
   users: {
