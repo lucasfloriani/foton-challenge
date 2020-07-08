@@ -1,7 +1,8 @@
-import multer from '@koa/multer';
+import { graphqlUploadKoa } from 'graphql-upload';
 
-const storage = multer.diskStorage({ destination: 'public/uploads' });
+const MB = 1000000;
 
-const limits = { fieldSize: 30 * 1024 * 1024 };
-
-export default multer({ storage, limits }).any();
+export default graphqlUploadKoa({
+  maxFiles: 10,
+  maxFileSize: MB * 10,
+});
