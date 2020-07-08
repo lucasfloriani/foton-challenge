@@ -4,7 +4,9 @@ import { GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLList, GraphQLFloat, G
 
 import Yup from 'yup';
 
-import { GraphQLContext } from '../../../types';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
+
+import { uploadFile } from '../../../helpers/file';
 
 import Beer from '../BeerModel';
 
@@ -14,6 +16,7 @@ import { BeerConnection } from '../BeerType';
 interface BeerAddArgs {
   user: string;
   name: string;
+  image: FileUpload;
   description: string;
   bitterness: number;
   coloring: number;
@@ -32,6 +35,14 @@ const validateAdd = Yup.object<BeerAddArgs>()
     name: Yup.string()
       .typeError('Nome precisa ser um texto')
       .required('Nome é obrigatório'),
+    image: Yup.object<FileUpload>()
+      .shape({
+        mimetype: Yup.string()
+          .typeError('Imagem só pode ser do tipo jpg, jpeg ou png')
+          .matches(/image\/.*/, 'Tipo do arquivo não suportado, precisa ser do tipo jpg, jpeg ou png')
+          .required('Imagem é obrigatória'),
+      })
+      .required(),
     description: Yup.string()
       .typeError('Descrição precisa ser um texto')
       .required('Descrição é obrigatório'),
@@ -78,6 +89,9 @@ const mutation = mutationWithClientMutationId({
     name: {
       type: GraphQLNonNull(GraphQLString),
     },
+    image: {
+      type: GraphQLNonNull(GraphQLUpload),
+    },
     description: {
       type: GraphQLNonNull(GraphQLString),
     },
@@ -100,11 +114,12 @@ const mutation = mutationWithClientMutationId({
       type: GraphQLNonNull(GraphQLFloat),
     },
   },
-  mutateAndGetPayload: async (args: BeerAddArgs, ctx: GraphQLContext) => {
+  mutateAndGetPayload: async (args: BeerAddArgs) => {
     try {
       const {
         user,
         name,
+        image,
         description,
         bitterness,
         coloring,
@@ -114,14 +129,11 @@ const mutation = mutationWithClientMutationId({
         alcoholContent,
       } = await validateAdd.validate(args);
 
-      const image = (ctx.koaContext.request as any).file;
-      if (!image) return { id: null, error: 'Imagem não foi informada' };
-
       const newBeer = await new Beer({
         user,
         name,
         description,
-        image,
+        image: await uploadFile(image),
         bitterness,
         coloring,
         volumetry,
