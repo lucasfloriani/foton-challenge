@@ -58,6 +58,7 @@ export const load = async (context: GraphQLContext, id: DataLoaderKey) => {
       return null;
     }
 
+    // TODO: Limit access to search only beers from the user logged, need to be logged to retrieve the beers
     return viewerCanSee() ? new Beer(data) : null;
   } catch (err) {
     return null;
